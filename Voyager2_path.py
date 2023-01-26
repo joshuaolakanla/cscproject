@@ -1,9 +1,14 @@
+#Importing all the necessary libraries and modules
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import Circle
 
+#assigning a list of the spatial objects to a variable name
+
 space_bodies = ['earth', 'mars', 'jupiter', 'saturn', 'uranus', 'voyager2']
+
+#defining a function that can read the data from the given file through the years
 
 def get_trajectory(filename):
     """Get the trajectory data from given file."""
@@ -23,14 +28,18 @@ def get_trajectory(filename):
                 break
             if 'A.D.' in line:
                 date = line[25:36]
-                if date.startswith('1988-Jul'): #stop reading data at this date
+                if date.startswith('1988-Jul'): 
+		
+	#Take a pause from reading the data
                     break
                 dates.append(date)
             elif line.startswith(' X ='):
                 xyz.append(get_line(line))
 
     return dates, np.array(xyz).T
-
+	
+	
+	#Defining a class that represents the trajectory of a celestial body.
 
 class Trajectory:
     """This class represents the trajectory of a celestial object"""
@@ -39,7 +48,6 @@ class Trajectory:
         """
         Initilize the Trajectory object with a radius r of the circle to plot,
         colour, c, and trajectory parsed from its HORIZON file, traj.
-
         """
 
         self.r = r
@@ -50,7 +58,6 @@ class Trajectory:
         """
         Get the x, y position of the object. If i is None, return the entire
         trajectory in an array, otherwise return the position at index i.
-
         """
 
         if i is None:
@@ -63,12 +70,12 @@ class Trajectory:
 
 # Initialize the Trajectory objects for each of the objects.
 ephemerides = {
-        'earth': Trajectory(0.3, 'tab:blue', get_trajectory('C:/Users/user/Desktop/CSC project/earth.txt')),
-        'mars': Trajectory(0.3, 'tab:red', get_trajectory('C:/Users/user/Desktop/CSC project/mars.txt')),
-        'jupiter': Trajectory(0.6, 'tab:orange', get_trajectory('C:/Users/user/Desktop/CSC project/jupiter.txt')),
+        'earth': Trajectory(0.3, 'tab:red', get_trajectory('C:/Users/user/Desktop/CSC project/earth.txt')),
+        'mars': Trajectory(0.3, 'tab:blue', get_trajectory('C:/Users/user/Desktop/CSC project/mars.txt')),
+        'jupiter': Trajectory(0.6, 'w', get_trajectory('C:/Users/user/Desktop/CSC project/jupiter.txt')),
         'saturn': Trajectory(0.5, 'brown', get_trajectory('C:/Users/user/Desktop/CSC project/saturn.txt')),
         'uranus': Trajectory(0.4, 'tab:green', get_trajectory('C:/Users/user/Desktop/CSC project/uranus.txt')),
-        'voyager2': Trajectory(0.2, 'w', get_trajectory('C:/Users/user/Desktop/CSC project/voyager2.txt')),
+        'voyager2': Trajectory(0.2, 'tab:orange', get_trajectory('C:/Users/user/Desktop/CSC project/voyager2.txt')),
               }
 
 # Black figure with Axes panel removed.
@@ -76,7 +83,7 @@ fig, ax = plt.subplots()
 fig.patch.set_facecolor('k')
 ax.axis('off')
 
-# Initialize the objects and pack the Matplotlib artists into a list, e_objs.
+# Initialize the objects and put the Matplotlib artists into a list, e_objs.
 e_objs = []
 for eph_name, ephemeris in ephemerides.items():
     if eph_name != 'voyager2':
