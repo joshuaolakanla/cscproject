@@ -28,10 +28,10 @@ def get_trajectory(filename):
                 break
             if 'A.D.' in line:
                 date = line[25:36]
-                if date.startswith('1988-Jul'): 
+                #if date.startswith('1988-Jul'): 
 		
 	#Take a pause from reading the data
-                    break
+                    #break
                 dates.append(date)
             elif line.startswith(' X ='):
                 xyz.append(get_line(line))
@@ -70,12 +70,12 @@ class Trajectory:
 
 # Initialize the Trajectory objects for each of the objects.
 ephemerides = {
-        'earth': Trajectory(0.3, 'tab:red', get_trajectory('C:/Users/user/Desktop/CSC project/earth.txt')),
-        'mars': Trajectory(0.3, 'tab:blue', get_trajectory('C:/Users/user/Desktop/CSC project/mars.txt')),
-        'jupiter': Trajectory(0.6, 'w', get_trajectory('C:/Users/user/Desktop/CSC project/jupiter.txt')),
-        'saturn': Trajectory(0.5, 'brown', get_trajectory('C:/Users/user/Desktop/CSC project/saturn.txt')),
-        'uranus': Trajectory(0.4, 'tab:green', get_trajectory('C:/Users/user/Desktop/CSC project/uranus.txt')),
-        'voyager2': Trajectory(0.2, 'tab:orange', get_trajectory('C:/Users/user/Desktop/CSC project/voyager2.txt')),
+        'earth': Trajectory(0.05, 'tab:red', get_trajectory('earth.txt')),
+        'mars': Trajectory(0.05, 'tab:blue', get_trajectory('mars.txt')),
+        'jupiter': Trajectory(0.1, 'w', get_trajectory('jupiter.txt')),
+        'saturn': Trajectory(0.08, 'brown', get_trajectory('saturn.txt')),
+        'uranus': Trajectory(0.06, 'tab:green', get_trajectory('uranus.txt')),
+        'voyager2': Trajectory(0.03, 'tab:orange', get_trajectory('voyager2.txt')),
               }
 
 # Black figure with Axes panel removed.
@@ -117,7 +117,7 @@ def animate(j):
     for i, ephemeris in enumerate(ephemerides.values()):
         e_circ = e_objs[i]
         e_circ.set_center(ephemeris.get_xy(j))
-        e_line.set_data(ephemeris.traj[0][:j], ephemeris.traj[1][:j])
+        
     e_line.set_data(ephemerides['voyager2'].traj[0][:j],
                     ephemerides['voyager2'].traj[1][:j])
     try:
@@ -126,9 +126,14 @@ def animate(j):
         pass
     return e_objs
 
-limit = 25
-ax.set_xlim(-limit, limit)
-ax.set_ylim(-limit, limit)
-reference_holder = animation.FuncAnimation(fig, animate, interval=1, init_func=initialise,
-                        blit=True)
+all_x = np.concatenate([ephemeris.traj[0] for ephemeris in ephemerides.values()])
+all_y = np.concatenate([ephemeris.traj[1] for ephemeris in ephemerides.values()])
+
+ax.set_xlim(all_x.min() - 1, all_x.max() + 1)
+ax.set_ylim(all_y.min() - 1, all_y.max() + 1)
+
+
+reference_holder = animation.FuncAnimation(fig, animate, frames=len(ephemerides['voyager2'].date_series),
+                                           interval=50, init_func=initialise, blit=True)
+
 plt.show()
